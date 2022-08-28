@@ -20,16 +20,16 @@ export default function Home() {
   
   return (
     <>
-      <nav class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Navbar</a>
-          <i class="bi bi-cart-check-fill px-2" onClick={()=>setLocCart(!locCart)}>{cart.length}</i>
+      <nav className="navbar navbar-expand-lg bg-light">
+        <div className="container-fluid">
+          <a className="navbar-brand" href="#">Navbar</a>
+          <i className="bi bi-cart-check-fill px-2" onClick={()=>setLocCart(!locCart)}>{cart.length}</i>
         </div>
       </nav>
       {locCart && <Cart Product={Product} setCart={setCart} Cart={cart} />}
       {!locCart && <Hom Product={Product} setProduct={setProduct} setCart={setCart} cart={cart} />}
       {cart.length >0?
-        !locCart?(<button onClick={()=>setLocCart(!locCart)} class="opacity-75 btn btn-primary col-sm-4 col-md-3 col-lg-2 shadow-lg rounded-end my-4 rounded-0 fixed-bottom">{'₹ '+(cart.reduce((a,b)=> a = a+b.price*b.quan, 0)).toFixed(2)}</button>):''
+        !locCart?(<button onClick={()=>setLocCart(!locCart)} className="opacity-75 btn btn-primary col-sm-4 col-md-3 col-lg-2 shadow-lg rounded-end my-4 rounded-0 fixed-bottom">{'₹ '+(cart.reduce((a,b)=> a = a+b.price*b.quan, 0)).toFixed(2)}</button>):''
       :''}
     </>
   )
@@ -64,21 +64,21 @@ function Hom({Product, setCart, cart, setProduct}) {
     console.log(e);
   }
   return (
-    <div class='row m-0 g-2'>
+    <div className='row m-0 g-2'>
       {Product.map(e=>(
-      <div class="card mx-auto" style={{width: '18rem'}} key={e.id}>
-        <img src={e.image} style={{width: '100%', height: '100px'}} class="card-img-top" alt="..." />
-        <div class="card-body">
-          <h5 class="card-title">{e.title}</h5>
-          <h6 class="card-text">{'₹ '+(e.price)}</h6>
+      <div className="card mx-auto" style={{width: '18rem'}} key={e.id}>
+        <img src={e.image} style={{width: '100%', height: '100px'}} className="card-img-top" alt="..." />
+        <div className="card-body">
+          <h5 className="card-title">{e.title}</h5>
+          <h6 className="card-text">{'₹ '+(e.price)}</h6>
           {cart.filter((x) =>x.id == e.id).length > 0?(
-          <div class="input-group mb-3">
-            <span class="input-group-text" onClick={()=>down(e)}>-</span>
-            <p class={`text-center pt-1 col-8 disabled`}>{e.quan}</p>
-            <span class="input-group-text" onClick={()=> up(e)} >+</span>
+          <div className="input-group mb-3">
+            <span className="input-group-text" onClick={()=>down(e)}>-</span>
+            <p className={`text-center pt-1 col-8 disabled`}>{e.quan}</p>
+            <span className="input-group-text" onClick={()=> up(e)} >+</span>
           </div>
           ):(
-          <button class="btn btn-primary w-100" onClick={()=>add(e)}>Add</button>
+          <button className="btn btn-primary w-100" onClick={()=>add(e)}>Add</button>
           )}
           
         </div>
@@ -169,8 +169,8 @@ function Cart({Cart, setCart}) {
   return (
     <>
       {Cart.length > 0?(
-      <div class="table-responsive">
-        <table class="table overflow-auto">
+      <div className="table-responsive">
+        <table className="table overflow-auto">
           <thead>
             <tr>
               <th scope="col">#</th>
@@ -197,7 +197,7 @@ function Cart({Cart, setCart}) {
             </tr>))}
             <tr>
               <th scope="row" onClick={(onlineCh)}>CheckOut</th>
-              <td class="text-end">Total</td>
+              <td className="text-end">Total</td>
               <td>{(Cart.reduce((a,b)=> a = a+b.quan, 0))}</td>
               <td></td>
               <td>{(Cart.reduce((a,b)=> a = a+(((b.gst/2)/100)*b.price)*b.quan, 0)).toFixed(2)}</td>
@@ -209,7 +209,7 @@ function Cart({Cart, setCart}) {
         </table>
       </div>
       ):(
-        <h5 class="text-center text-danger">No Item</h5>
+        <h5 className="text-center text-danger">No Item</h5>
       )}
     </>
   )
