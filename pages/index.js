@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+BASE_URL = 'https://nextjs-ecomm.herokuapp.com';
 export default function Home() {
   const [Product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
@@ -97,7 +98,7 @@ function Cart({Cart, setCart}) {
 			alert('Razorpay SDK failed to load. Are you online?')
 			return
 		}
-		const data = await axios.post('http://localhost:3000/api/razorpay', {Razorpay: ((Cart.reduce((a,b)=> a = a+b.price*b.quan, 0))*100).toFixed(2)}).then((t) =>
+		const data = await axios.post(BASE_URL+'/api/razorpay', {Razorpay: ((Cart.reduce((a,b)=> a = a+b.price*b.quan, 0))*100).toFixed(2)}).then((t) =>
 			t.data
 		)
 
@@ -109,7 +110,7 @@ function Cart({Cart, setCart}) {
 			order_id: data.id,
 			name: 'Donation',
 			description: 'Thank you for nothing. Please give us some money',
-			image: 'http://localhost:3000/vercel.svg',
+			image: BASE_URL+'/vercel.svg',
 			handler: function (response) {
 				alert(response.razorpay_payment_id)
 				alert(response.razorpay_order_id)
@@ -140,7 +141,7 @@ function Cart({Cart, setCart}) {
   }
   const ch =()=>{
     const uu = uuidv4();
-    axios.post('http://localhost:3000/api/Order/post',{
+    axios.post(BASE_URL+'/api/Order/post',{
       "orderId": uu,
       "userId":"545",
       "amount":`${(Cart.reduce((a,b)=> a = a+b.price, 0))}`,
@@ -148,7 +149,7 @@ function Cart({Cart, setCart}) {
       "con":"2474872125"
     }).then((e)=>{
       if(e.data.success){
-        axios.post('http://localhost:3000/api/orderDetail/post',
+        axios.post(BASE_URL+'/api/orderDetail/post',
           Cart.map(e=>
             ({
               orderId: uu,
