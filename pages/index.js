@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-const BASE_URL = 'https://nextjs-ecomm.herokuapp.com';
+const BASE_URL = 'https://e-comm-lilac.vercel.app';
 export default function Home() {
   const [Product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
