@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
-const BASE_URL = 'https://e-comm-lilac.vercel.app';
+import Image from 'next/image';
+const BASE_URL = '/';
 export default function Home() {
   const [Product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
@@ -21,10 +22,21 @@ export default function Home() {
   
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-light">
+      <nav className="navbar navbar-expand-lg bg-light sticky-top py-2">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">Navbar</a>
-          <i className="bi bi-cart-check-fill px-2" onClick={()=>setLocCart(!locCart)}>{cart.length}</i>
+          <a className="navbar-brand fs-4" href="#" onClick={()=>setLocCart(false)}>Navbar</a>
+          <div className="d-flex gap-2 align-items-center">
+            <div className="d-none d-md-block">
+              <input type="text" className="form-control" placeholder="Search" aria-describedby="emailHelp"/>
+            </div>
+            <span class="btn btn-outline-dark position-relative" onClick={()=>setLocCart(!locCart)}>
+              cart
+              <span class="position-absolute top-0 start-100 translate-middle p-1 px-2 bg-warning border border-light rounded-circle" style={{fontSize:'10px'}}>
+              {cart.length}
+                <span class="visually-hidden">New alerts</span>
+              </span>
+            </span>
+          </div>
         </div>
       </nav>
       {locCart && <Cart Product={Product} setCart={setCart} Cart={cart} />}
@@ -65,21 +77,38 @@ function Hom({Product, setCart, cart, setProduct}) {
     console.log(e);
   }
   return (
-    <div className='row m-0 g-2'>
+    <div className='row mx-0 gy-4 mt-3 col-12 col-md-11 col-lg-10 mx-auto'>
       {Product.map(e=>(
-      <div className="card mx-auto" style={{width: '18rem'}} key={e.id}>
-        <img src={e.image} style={{width: '100%', height: '100px'}} className="card-img-top" alt="..." />
+      <div className="card shadow mx-auto col-6 col-md-4 col-lg-3 p-1 border-0 rounded-3" style={{width: '22rem'}} key={e.id}>
+        <Image alt={e.title} src={e.image} width={300} height={300} style={{width: '100%',aspectRatio:1,objectFit:'contain'}} className="card-img-top catGrow" />
         <div className="card-body">
-          <h5 className="card-title">{e.title}</h5>
-          <h6 className="card-text">{'₹ '+(e.price)}</h6>
-          {cart.filter((x) =>x.id == e.id).length > 0?(
-          <div className="input-group mb-3">
-            <span className="input-group-text" onClick={()=>down(e)}>-</span>
-            <p className={`text-center pt-1 col-8 disabled`}>{e.quan}</p>
-            <span className="input-group-text" onClick={()=> up(e)} >+</span>
+          <p className="c-text text-truncate">{e.title}</p>
+          <div className="d-flex justify-content-between my-1 align-items-center">
+            <div>
+              <h6 className="card-text">{'₹ '+(e.price)}</h6>
+            </div>
+            <div className='d-inline-flex gap-1'>
+                <div className="bg-dark text-light px-1">{e.rating.rate} <i className='bi bi-star-fill'/></div>
+                <p className='c-text m-0'>{e.rating.count} Reviews</p>
+            </div>
           </div>
+          {cart.filter((x) =>x.id == e.id).length > 0?(
+            <div className='d-flex gap-2'>
+                <div className="col d-flex align-items-center justify-content-between border px-3 rounded-2">
+                  <span className="cursor-pointer" onClick={() => down(e)}>-</span>
+                  <p className={`text-center disabled m-0 p-0`}>{e.quan}</p>
+                  <span className="cursor-pointer" onClick={() => up(e)} >+</span>
+                </div>
+                <div className="col">
+                <button className="btn btn-primary w-100" onClick={()=>add(e)}><i className='bi bi-bag me-1' />Checkout</button>
+                </div>
+          </div>
+          
           ):(
-          <button className="btn btn-primary w-100" onClick={()=>add(e)}>Add</button>
+            <div className='d-flex gap-2'>
+              <button className="btn btn-outline-primary w-50" onClick={()=>add(e)}><i className='bi bi-plus' />Add to Cart</button>
+              <button className="btn btn-primary w-50" onClick={()=>add(e)}><i className='bi bi-bag me-1' />Buy Now</button>
+            </div>
           )}
           
         </div>
@@ -98,7 +127,7 @@ function Cart({Cart, setCart}) {
 			alert('Razorpay SDK failed to load. Are you online?')
 			return
 		}
-		const data = await axios.post(BASE_URL+'/api/razorpay', {Razorpay: ((Cart.reduce((a,b)=> a = a+b.price*b.quan, 0))*100).toFixed(2)}).then((t) =>
+		const data = await axios.post('/api/razorpay', {Razorpay: ((Cart.reduce((a,b)=> a = a+b.price*b.quan, 0))*100).toFixed(2)}).then((t) =>
 			t.data
 		)
 
