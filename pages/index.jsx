@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import Image from 'next/image';
+import Script from 'next/script';
+import Head from 'next/head';
 const BASE_URL = '/';
 export default function Home() {
   const [Product, setProduct] = useState([]);
@@ -18,10 +20,11 @@ export default function Home() {
       })
     }
     fun()
+    
   }, [])
   
   return (
-    <>
+    <>   
       <nav className="navbar navbar-expand-lg bg-light sticky-top py-2">
         <div className="container-fluid">
           <a className="navbar-brand fs-4" href="#" onClick={()=>setLocCart(false)}>Navbar</a>
@@ -29,11 +32,11 @@ export default function Home() {
             <div className="d-none d-md-block">
               <input type="text" className="form-control" placeholder="Search" aria-describedby="emailHelp"/>
             </div>
-            <span class="btn btn-outline-dark position-relative" onClick={()=>setLocCart(!locCart)}>
+            <span className="btn btn-outline-dark position-relative" onClick={()=>setLocCart(!locCart)}>
               cart
-              <span class="position-absolute top-0 start-100 translate-middle p-1 px-2 bg-warning border border-light rounded-circle" style={{fontSize:'10px'}}>
+              <span className="position-absolute top-0 start-100 translate-middle p-1 px-2 bg-warning border border-light rounded-circle" style={{fontSize:'10px'}}>
               {cart.length}
-                <span class="visually-hidden">New alerts</span>
+                <span className="visually-hidden">New alerts</span>
               </span>
             </span>
           </div>
@@ -77,9 +80,9 @@ function Hom({Product, setCart, cart, setProduct}) {
     console.log(e);
   }
   return (
-    <div className='row mx-0 gy-4 mt-3 col-12 col-md-11 col-lg-10 mx-auto'>
+    <div data-aos="fade-up" className='row mx-0 gy-4 mt-3 col-12 col-md-11 col-lg-10 mx-auto'>
       {Product.map(e=>(
-      <div className="card shadow mx-auto col-6 col-md-4 col-lg-3 p-1 border-0 rounded-3" style={{width: '22rem'}} key={e.id}>
+      <div data-aos="fade-up" className="card shadow mx-auto col-6 col-md-4 col-lg-3 p-1 border-0 rounded-3" style={{width: '22rem'}} key={e.id}>
         <Image alt={e.title} src={e.image} width={300} height={300} style={{width: '100%',aspectRatio:1,objectFit:'contain'}} className="card-img-top catGrow" />
         <div className="card-body">
           <p className="c-text text-truncate">{e.title}</p>
