@@ -11,17 +11,34 @@ export default function Home() {
   const [Product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
   const [locCart, setLocCart] = useState(false)
+  const [original,setOriginalProduct] = useState([])
+  const [searchTerm,setSearchTerm] = useState('');
+  const [localLoading, setLoaclLoading] = useState(false)
+  const fun =()=>{
+     fetch('https://fakestoreapi.com/products').then(e=>e.json()).then((e)=>{
+      setProduct(e.map(e=> ({...e,quan: 1, gst: 12, price: (e.price).toFixed(2)})))
+      setOriginalProduct(e.map(e=> ({...e,quan: 1, gst: 12, price: (e.price).toFixed(2)})))    
+    })
+  }
+
+  const SearchProduct=(e)=>setProduct(original.filter(i=>e.length>0?i.title.includes(e):true));
   useEffect(() => {
-    const fun =()=>{
-       fetch('https://fakestoreapi.com/products').then(e=>e.json()).then((e)=>{
-        setProduct(e.map(e=> ({...e,quan: 1, gst: 12, price: (e.price).toFixed(2)})))
-        
-        
-      })
-    }
     fun()
-    
+    window.AOS.init(); 
   }, [])
+
+  useEffect(()=>{
+    let debounce;
+    setLoaclLoading(true)
+    debounce= setTimeout(()=>{
+      SearchProduct(searchTerm);
+      setLoaclLoading(false)
+    },700);
+    ()=>{
+      clearTimeout(debounce);
+      setLoaclLoading(false)
+    }
+  },[searchTerm]);
   
   return (
     <>   
@@ -29,8 +46,9 @@ export default function Home() {
         <div className="container-fluid">
           <a className="navbar-brand fs-4" href="#" onClick={()=>setLocCart(false)}>Navbar</a>
           <div className="d-flex gap-2 align-items-center">
-            <div className="d-none d-md-block">
-              <input type="text" className="form-control" placeholder="Search" aria-describedby="emailHelp"/>
+            <div className="d-none d-md-block d-flex position-relative">
+              <input type="text" className="form-control" placeholder="Search" onChange={(e)=>setSearchTerm(e.target.value)} aria-describedby="emailHelp"/>
+              {localLoading&&<div className="spinner-border text-secondary position-absolute end-0 me-2" style={{top:'28%',height:'15px',width:'15px',fontSize:'10px'}} />}
             </div>
             <span className="btn btn-outline-dark position-relative" onClick={()=>setLocCart(!locCart)}>
               cart
@@ -43,7 +61,7 @@ export default function Home() {
         </div>
       </nav>
       {locCart && <Cart Product={Product} setCart={setCart} Cart={cart} />}
-      {!locCart && <Hom Product={Product} setProduct={setProduct} setCart={setCart} cart={cart} />}
+      {!locCart && <Hom Product={Product} setProduct={setProduct} setCart={setCart} cart={cart} setLocCart={setLocCart} />}
       {cart.length >0?
         !locCart?(<button onClick={()=>setLocCart(!locCart)} className="opacity-75 btn btn-primary col-sm-4 col-md-3 col-lg-2 shadow-lg rounded-end my-4 rounded-0 fixed-bottom">{'₹ '+(cart.reduce((a,b)=> a = a+b.price*b.quan, 0)).toFixed(2)}</button>):''
       :''}
@@ -52,7 +70,7 @@ export default function Home() {
 }
 
 
-function Hom({Product, setCart, cart, setProduct}) {
+function Hom({Product, setCart, cart, setProduct,setLocCart}) {
   const up =(e)=>{
     setProduct(Product.map(x=>{
       if(x.id === e.id){
@@ -77,7 +95,6 @@ function Hom({Product, setCart, cart, setProduct}) {
   }
   const add = (e)=>{
     setCart(cart.concat(e));
-    console.log(e);
   }
   return (
     <div data-aos="fade-up" className='row mx-0 gy-4 mt-3 col-12 col-md-11 col-lg-10 mx-auto'>
@@ -103,14 +120,14 @@ function Hom({Product, setCart, cart, setProduct}) {
                   <span className="cursor-pointer" onClick={() => up(e)} >+</span>
                 </div>
                 <div className="col">
-                <button className="btn btn-primary w-100" onClick={()=>add(e)}><i className='bi bi-bag me-1' />Checkout</button>
+                <button className="btn btn-primary w-100" onClick={()=>setLocCart(i=>!i)}><i className='bi bi-bag me-1' />Checkout</button>
                 </div>
           </div>
           
           ):(
             <div className='d-flex gap-2'>
               <button className="btn btn-outline-primary w-50" onClick={()=>add(e)}><i className='bi bi-plus' />Add to Cart</button>
-              <button className="btn btn-primary w-50" onClick={()=>add(e)}><i className='bi bi-bag me-1' />Buy Now</button>
+              <button className="btn btn-primary w-50" onClick={()=>{add(e);setLocCart(i=>!i)}}><i className='bi bi-bag me-1' />Buy Now</button>
             </div>
           )}
           
